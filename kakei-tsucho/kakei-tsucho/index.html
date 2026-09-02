@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>家計通帳</title>
+
+<!-- PWA / iOS home screen -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1D2A44">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="家計通帳">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- 表紙 : cover / month summary -->
+  <header class="cover">
+    <div class="cover-inner">
+      <div class="cover-top">
+        <span class="cover-label">家計通帳</span>
+        <button id="monthPrev" class="month-nav" aria-label="前の月">‹</button>
+        <span id="monthLabel" class="cover-month">2026年 9月</span>
+        <button id="monthNext" class="month-nav" aria-label="次の月">›</button>
+      </div>
+      <div class="cover-stats">
+        <div class="stat">
+          <span class="stat-label">収入</span>
+          <span class="stat-value mono" id="statIncome">¥0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">支出予定</span>
+          <span class="stat-value mono" id="statExpense">¥0</span>
+        </div>
+        <div class="stat stat-balance">
+          <span class="stat-label">差引残高</span>
+          <span class="stat-value mono" id="statBalance">¥0</span>
+        </div>
+      </div>
+      <div class="cover-progress">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span class="progress-text" id="progressText">支払い済み 0 / 0 件</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 記入欄 : entry list -->
+  <main class="ledger">
+
+    <section class="ledger-group" id="groupUnpaid">
+      <h2 class="group-title">未処理（支払い・受取） <span id="countUnpaid" class="group-count">0</span></h2>
+      <div class="rows" id="rowsUnpaid"></div>
+      <p class="empty-note" id="emptyUnpaid" hidden>未処理の項目はありません。</p>
+    </section>
+
+    <section class="ledger-group" id="groupPaid">
+      <h2 class="group-title">処理済み <span id="countPaid" class="group-count">0</span></h2>
+      <div class="rows" id="rowsPaid"></div>
+      <p class="empty-note" id="emptyPaid" hidden>処理済みの項目はまだありません。</p>
+    </section>
+
+  </main>
+
+  <button id="addButton" class="add-fab" aria-label="新しい記入を追加">+</button>
+
+</div>
+
+<!-- 記入フォーム : add / edit entry -->
+<div id="formOverlay" class="overlay" hidden>
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3 id="formTitle">新しい記入</h3>
+      <button id="formClose" class="icon-btn" aria-label="閉じる">×</button>
+    </div>
+
+    <form id="entryForm">
+      <div class="field-row type-row">
+        <label class="type-chip">
+          <input type="radio" name="kind" value="expense" checked>
+          <span>支出</span>
+        </label>
+        <label class="type-chip">
+          <input type="radio" name="kind" value="income">
+          <span>収入</span>
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field-label">項目名</span>
+        <input type="text" id="fieldName" placeholder="例）家賃、電気代、Netflix" required>
+      </label>
+
+      <label class="field">
+        <span class="field-label">カテゴリ</span>
+        <select id="fieldCategory"></select>
+      </label>
+
+      <div class="field-pair">
+        <label class="field">
+          <span class="field-label">金額</span>
+          <input type="number" id="fieldAmount" inputmode="numeric" placeholder="0" min="0" required>
+        </label>
+        <label class="field">
+          <span class="field-label">支払日（毎月）</span>
+          <input type="number" id="fieldDay" inputmode="numeric" placeholder="1〜31" min="1" max="31" required>
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field-label">メモ（任意）</span>
+        <input type="text" id="fieldMemo" placeholder="例）年払いを月割り、口座振替 など">
+      </label>
+
+      <div class="sheet-actions">
+        <button type="button" id="deleteEntry" class="btn btn-danger" hidden>この記入を削除</button>
+        <button type="submit" class="btn btn-primary">記帳する</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
