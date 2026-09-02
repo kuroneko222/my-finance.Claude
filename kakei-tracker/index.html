@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>家計トラッカー</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#14171F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="家計トラッカー">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header class="topbar">
+    <div class="topbar-text">
+      <h1>家計トラッカー</h1>
+      <p class="subtitle">収支・支払い管理</p>
+    </div>
+    <div class="month-pill">
+      <button id="monthPrev" class="month-nav" aria-label="前の月">‹</button>
+      <span id="monthLabel">9月</span>
+      <button id="monthNext" class="month-nav" aria-label="次の月">›</button>
+    </div>
+  </header>
+
+  <section class="hero-card">
+    <span class="hero-label">今月の残高予測</span>
+    <div class="hero-amount mono" id="statBalance">¥0</div>
+    <div class="hero-split">
+      <div class="hero-stat">
+        <span class="hero-stat-icon up" aria-hidden="true">↗</span>
+        <span class="hero-stat-label">総収入</span>
+        <strong class="hero-stat-value income mono" id="statIncome">¥0</strong>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-icon down" aria-hidden="true">↘</span>
+        <span class="hero-stat-label">総支出</span>
+        <strong class="hero-stat-value expense mono" id="statExpense">¥0</strong>
+      </div>
+    </div>
+  </section>
+
+  <div class="quick-row">
+    <div class="info-card">
+      <span class="info-label">未払いの期日支払い</span>
+      <strong class="info-amount mono" id="statUnpaidTotal">¥0</strong>
+    </div>
+    <button class="add-card" id="addCardBtn" type="button">
+      <span class="add-card-icon">+</span>
+      <span>支払いを追加</span>
+    </button>
+  </div>
+
+  <div class="chip-row">
+    <button class="chip" data-kind="income" data-category="">
+      <span class="chip-plus income">＋</span>収入
+    </button>
+    <button class="chip" data-kind="expense" data-category="家賃・住居">
+      <span class="chip-plus expense">＋</span>固定費
+    </button>
+    <button class="chip" data-kind="expense" data-category="サブスク">
+      <span class="chip-plus expense">＋</span>サブスク
+    </button>
+  </div>
+
+  <div class="filter-tabs" id="filterTabs">
+    <button class="tab active" data-filter="all">すべて</button>
+    <button class="tab" data-filter="unpaid">期日支払い</button>
+    <button class="tab" data-filter="fixed">固定費</button>
+    <button class="tab" data-filter="subscription">サブスク</button>
+  </div>
+
+  <main class="list-card" id="listCard">
+    <div class="rows" id="rows"></div>
+    <div class="empty-state" id="emptyState" hidden>
+      <span>データがありません</span>
+    </div>
+  </main>
+
+  <button id="addButton" class="add-fab" aria-label="新しい記入を追加">+</button>
+
+</div>
+
+<div id="formOverlay" class="overlay" hidden>
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3 id="formTitle">新しい記入</h3>
+      <button id="formClose" class="icon-btn" aria-label="閉じる">×</button>
+    </div>
+
+    <form id="entryForm">
+      <div class="field-row type-row">
+        <label class="type-chip">
+          <input type="radio" name="kind" value="expense" checked>
+          <span>支出</span>
+        </label>
+        <label class="type-chip">
+          <input type="radio" name="kind" value="income">
+          <span>収入</span>
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field-label">項目名</span>
+        <input type="text" id="fieldName" placeholder="例）家賃、電気代、Netflix" required>
+      </label>
+
+      <label class="field">
+        <span class="field-label">カテゴリ</span>
+        <select id="fieldCategory"></select>
+      </label>
+
+      <div class="field-pair">
+        <label class="field">
+          <span class="field-label">金額</span>
+          <input type="number" id="fieldAmount" inputmode="numeric" placeholder="0" min="0" required>
+        </label>
+        <label class="field">
+          <span class="field-label">支払日（毎月）</span>
+          <input type="number" id="fieldDay" inputmode="numeric" placeholder="1〜31" min="1" max="31" required>
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field-label">メモ（任意）</span>
+        <input type="text" id="fieldMemo" placeholder="例）年払いを月割り、口座振替 など">
+      </label>
+
+      <div class="sheet-actions">
+        <button type="button" id="deleteEntry" class="btn btn-danger" hidden>この記入を削除</button>
+        <button type="submit" class="btn btn-primary">保存する</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
